@@ -1,0 +1,20 @@
+server.port: 8080
+spring:
+  application:
+    name: aws-study
+  mvc:
+    log-request-details: true
+management:
+  endpoint:
+    metrics.enabled: true
+    prometheus.enabled: true
+    restart.enabled: true
+  endpoints.web.exposure.include: '*'
+  metrics.export.prometheus.enabled: true
+  trace:
+    http:
+      include: requestHeaders,responseHeaders,cookieHeaders,authorizationHeader,principal,remoteAddress,sessionId,timeTaken
+
+logging.level.org.qwertech: DEBUG
+logging.level.org.springframework.web.filter: DEBUG
+logging.level.ROOT: INFO
