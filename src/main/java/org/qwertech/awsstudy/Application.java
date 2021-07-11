@@ -1,4 +1,4 @@
-package org.qwertech.springfeign;
+package org.qwertech.awsstudy;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

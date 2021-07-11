@@ -1,6 +1,15 @@
 version: "3.9"
+volumes:
+  jenkins_home:
 services:
   web:
     build: .
     ports:
+      - "8080:80"
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    ports:
       - "8080:8080"
+      - "50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
