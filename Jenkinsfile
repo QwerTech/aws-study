@@ -18,7 +18,6 @@ pipeline {
 
     environment {
         POM_VERSION = getVersion()
-        JAR_NAME = getJarName()
         AWS_ECR_REGION = 'eu-central-1'
         AWS_ECS_SERVICE = 'aws-study-service'
         AWS_ECS_TASK_DEFINITION = 'aws-study-taskdefinition'
@@ -43,7 +42,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
                     script {
-                        docker.build("${AWS_ECR_URL}:${POM_VERSION}", "--build-arg JAR_FILE=${JAR_NAME} .")
+                        docker.build("${AWS_ECR_URL}:${POM_VERSION}", ".")
                     }
                 }
             }
@@ -90,20 +89,10 @@ pipeline {
     }
 }
 
-def getJarName() {
-    def jarName = getName() + '-' + getVersion() + '.jar'
-    echo "jarName: ${jarName}"
-    return  jarName
-}
 
 def getVersion() {
     def pom = readMavenPom file: './pom.xml'
     return pom.version
-}
-
-def getName() {
-    def pom = readMavenPom file: './pom.xml'
-    return pom.name
 }
 
 def updateContainerDefinitionJsonWithImageVersion() {
