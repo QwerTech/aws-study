@@ -51,8 +51,8 @@ pipeline {
         stage('Push image to ECR') {
             steps {
                 withAWS(region: "${AWS_ECR_REGION}", credentials: 'personal-aws-ecr') {
-                    docker.withRegistry("${AWS_ECR_URL}") {
-                        script {
+                    script {
+                        docker.withRegistry("${AWS_ECR_URL}") {
                             def login = ecrLogin()
                             //                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
                             sh("${login}")
