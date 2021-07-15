@@ -19,6 +19,7 @@ pipeline {
         POM_VERSION = getVersion()
         AWS_ECR_REGION = 'eu-central-1'
         AWS_ECS_SERVICE = 'aws-study-service'
+        APP_NAME = 'aws-study'
         AWS_ECS_TASK_DEFINITION = 'aws-study-taskdefinition'
         AWS_ECS_COMPATIBILITY = 'EC2'
         AWS_ECS_NETWORK_MODE = 'awsvpc'
@@ -42,7 +43,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                     script {
-                        docker.build("${AWS_ECR_URL}:${POM_VERSION}", ".")
+                        docker.build("${APP_NAME}:${POM_VERSION}", ".")
                     }
             }
         }
@@ -50,11 +51,13 @@ pipeline {
         stage('Push image to ECR') {
             steps {
                 withAWS(region: "${AWS_ECR_REGION}", credentials: 'personal-aws-ecr') {
-                    script {
-                        def login = ecrLogin()
-//                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
-                        sh("${login}")
-                        docker.image("${AWS_ECR_URL}:${POM_VERSION}").push()
+                    docker.withRegistry("${AWS_ECR_URL}") {
+                        script {
+                            def login = ecrLogin()
+                            //                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
+                            sh("${login}")
+                            docker.image("${APP_NAME}:${POM_VERSION}").push()
+                        }
                     }
                 }
             }
