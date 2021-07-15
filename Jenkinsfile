@@ -41,58 +41,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
-                    // available as an env variable, but will be masked if you try to print it out any which way
-                    // note: single quotes prevent Groovy interpolation; expansion is by Bourne Shell, which is what you want
-                    sh 'echo $AWS_ECR_URL'
-                    // also available as a Groovy variable
-                    echo AWS_ECR_URL
-                    // or inside double quotes for string interpolation
-                    echo "username is $AWS_ECR_URL"
                     script {
-                        try {
-                            println "1building docker image $AWS_ECR_URL"
-                        } catch (e) {
-                            echo '1'
-                            print e
-                        }
-                        try {
-                            println '2building docker image $AWS_ECR_URL'
-                        } catch (e) {
-                            echo '2'
-                            print e
-                        }
-                        try {
-                            println '''3building docker image $AWS_ECR_URL'''
-                        } catch (e) {
-                            echo '3'
-                            print e
-                        }
-                        try {
-                            println '''4building docker image ${AWS_ECR_URL}'''
-                        } catch (e) {
-                            echo '4'
-                            print e
-                        }
-                        try {
-                            println '5building docker image ${AWS_ECR_URL}'
-                        } catch (e) {
-                            echo '5'
-                            print e
-                        }
-                        try {
-                            println "6building docker image ${AWS_ECR_URL}"
-                        } catch (e) {
-                            echo '6'
-                            print e
-                        }
-                        try {
-                            println 'building docker image $AWS_ECR_URL'
-                            sh('docker build -t ${AWS_ECR_URL}:${POM_VERSION} .')
-                            println("built docker image")
-                        } catch (e) {
-                            print e
-                        }
-
+                        docker.build("${AWS_ECR_URL}:${POM_VERSION}", ".")
                     }
                 }
             }
