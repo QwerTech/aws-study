@@ -4,6 +4,21 @@
       "memory": 300,
       "image": "",
       "essential": true,
-      "name": "aws-study-container"
+      "name": "aws-study-container",
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 8080
+        }
+      ],
+      "compatibilities": [
+        "EXTERNAL",
+        "EC2"
+      ],
+      "family": "aws-study-taskdefinition",
+      "requiresCompatibilities": [
+        "EC2"
+      ]
     }
 ]
