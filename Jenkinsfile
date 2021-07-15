@@ -43,7 +43,7 @@ pipeline {
                     println("building docker image")
                     script {
                         try {
-                            sh("docker build -t ${AWS_ECR_URL}:${POM_VERSION} .")
+                            sh('docker build -t ${AWS_ECR_URL}:${POM_VERSION} .')
                             println("built docker image")
                         } catch (e) {
                             print e
