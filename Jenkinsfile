@@ -43,7 +43,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                     script {
-                        docker.build("${APP_NAME}:${POM_VERSION}", ".")
+                        docker.build("${APP_NAME}:${env.BUILD_ID}", ".")
                     }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                             def login = ecrLogin()
                             //                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
                             sh("${login}")
-                            docker.image("${APP_NAME}:${POM_VERSION}").push()
+                            docker.image("${APP_NAME}:${env.BUILD_ID}").push()
                         }
                     }
                 }
@@ -84,7 +84,7 @@ pipeline {
 //                publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/site/jacoco-ut/', reportFiles: 'index.html', reportName: 'Unit Testing Coverage', reportTitles: 'Unit Testing Coverage'])
 //                jacoco(execPattern: 'target/jacoco-ut.exec')
 ////                deleteDir()
-//                sh 'docker rmi ${AWS_ECR_URL}:${POM_VERSION}'
+//                sh 'docker rmi ${AWS_ECR_URL}:${env.BUILD_ID}'
 //            }
 //        }
 //    }
@@ -98,7 +98,7 @@ def getVersion() {
 
 def updateContainerDefinitionJsonWithImageVersion() {
     def containerDefinitionJson = readJSON file: AWS_ECS_TASK_DEFINITION_PATH, returnPojo: true
-    containerDefinitionJson[0 as String]['image'] = "${AWS_ECR_URL}:${POM_VERSION}".inspect()
+    containerDefinitionJson[0 as String]['image'] = "${AWS_ECR_URL}:${env.BUILD_ID}".inspect()
     echo "task definiton json: ${containerDefinitionJson}"
     writeJSON file: AWS_ECS_TASK_DEFINITION_PATH, json: containerDefinitionJson
 }
