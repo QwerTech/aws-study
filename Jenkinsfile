@@ -40,11 +40,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
+//                withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
                     script {
                         docker.build("${AWS_ECR_URL}:${POM_VERSION}", ".")
                     }
-                }
+//                }
             }
         }
 
