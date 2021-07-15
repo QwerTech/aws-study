@@ -41,6 +41,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
+                    // available as an env variable, but will be masked if you try to print it out any which way
+                    // note: single quotes prevent Groovy interpolation; expansion is by Bourne Shell, which is what you want
+                    sh 'echo $AWS_ECR_URL'
+                    // also available as a Groovy variable
+                    echo AWS_ECR_URL
+                    // or inside double quotes for string interpolation
+                    echo "username is $AWS_ECR_URL"
                     script {
                         try {
                             println "1building docker image $AWS_ECR_URL"
