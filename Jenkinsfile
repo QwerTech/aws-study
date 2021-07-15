@@ -40,9 +40,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
+                    println("building docker image")
                     script {
                         try {
                             sh("docker build -t ${AWS_ECR_URL}:${POM_VERSION} .")
+                            println("built docker image")
                         } catch (e) {
                             print e
                         }
@@ -101,7 +103,7 @@ def getVersion() {
 
 def updateContainerDefinitionJsonWithImageVersion() {
     def containerDefinitionJson = readJSON file: AWS_ECS_TASK_DEFINITION_PATH, returnPojo: true
-    containerDefinitionJson[0]['image'] = "${AWS_ECR_URL}:${POM_VERSION}".inspect()
+    containerDefinitionJson[0 as String]['image'] = "${AWS_ECR_URL}:${POM_VERSION}".inspect()
     echo "task definiton json: ${containerDefinitionJson}"
     writeJSON file: AWS_ECS_TASK_DEFINITION_PATH, json: containerDefinitionJson
 }
