@@ -98,7 +98,7 @@ def getVersion() {
 
 def updateContainerDefinitionJsonWithImageVersion() {
     def containerDefinitionJson = readJSON file: AWS_ECS_TASK_DEFINITION_PATH, returnPojo: true
-    containerDefinitionJson[0 as String]['image'] = "${AWS_ECR_URL}:${env.BUILD_ID}".inspect()
+    containerDefinitionJson[0]['image'] = "${AWS_ECR_URL}:${env.BUILD_ID}".inspect()
     echo "task definiton json: ${containerDefinitionJson}"
     writeJSON file: AWS_ECS_TASK_DEFINITION_PATH, json: containerDefinitionJson
 }
