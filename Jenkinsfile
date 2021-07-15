@@ -23,8 +23,6 @@ pipeline {
         AWS_ECS_TASK_DEFINITION = 'aws-study-taskdefinition'
         AWS_ECS_COMPATIBILITY = 'EC2'
         AWS_ECS_NETWORK_MODE = 'awsvpc'
-        AWS_ECS_CPU = '0'
-        AWS_ECS_MEMORY = '300'
         AWS_ECS_CLUSTER = 'main-cluster'
         AWS_ECS_TASK_DEFINITION_PATH = './ecs/container-definition-update-image.json'
         AWS_ECR_URL = "673796292432.dkr.ecr.eu-central-1.amazonaws.com"
@@ -68,7 +66,7 @@ pipeline {
                     withCredentials([string(credentialsId: 'AWS_EXECUTION_ROL_SECRET', variable: 'AWS_ECS_EXECUTION_ROL')]) {
                         script {
                             updateContainerDefinitionJsonWithImageVersion()
-                            sh("/usr/local/bin/aws ecs register-task-definition --region ${AWS_ECR_REGION} --family ${AWS_ECS_TASK_DEFINITION}  --requires-compatibilities ${AWS_ECS_COMPATIBILITY} --network-mode ${AWS_ECS_NETWORK_MODE} --cpu ${AWS_ECS_CPU} --memory ${AWS_ECS_MEMORY} --container-definitions file://${AWS_ECS_TASK_DEFINITION_PATH}")
+                            sh("/usr/local/bin/aws ecs register-task-definition --region ${AWS_ECR_REGION} --family ${AWS_ECS_TASK_DEFINITION}  --requires-compatibilities ${AWS_ECS_COMPATIBILITY} --network-mode ${AWS_ECS_NETWORK_MODE} --container-definitions file://${AWS_ECS_TASK_DEFINITION_PATH}")
                             def taskRevision = sh(script: "/usr/local/bin/aws ecs describe-task-definition --task-definition ${AWS_ECS_TASK_DEFINITION} | egrep \"revision\" | tr \"/\" \" \" | awk '{print \$2}' | sed 's/\"\$//'", returnStdout: true)
                             sh("/usr/local/bin/aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition ${AWS_ECS_TASK_DEFINITION}:${taskRevision}")
                         }
