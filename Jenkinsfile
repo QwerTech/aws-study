@@ -52,7 +52,7 @@ pipeline {
             steps {
                 withAWS(region: "${AWS_ECR_REGION}", credentials: 'personal-aws-ecr') {
                     script {
-                        docker.withRegistry("${AWS_ECR_URL}") {
+                        docker.withRegistry("https://${AWS_ECR_URL}") {
                             def login = ecrLogin()
                             //                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
                             sh("${login}")
