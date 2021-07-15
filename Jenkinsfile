@@ -42,7 +42,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
                     script {
                         try {
-                            println 'building docker image ${AWS_ECR_URL}'
+                            println 'building docker image $AWS_ECR_URL'
                             sh('docker build -t ${AWS_ECR_URL}:${POM_VERSION} .')
                             println("built docker image")
                         } catch (e) {
