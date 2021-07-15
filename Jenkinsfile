@@ -26,6 +26,7 @@ pipeline {
         AWS_ECS_MEMORY = '512'
         AWS_ECS_CLUSTER = 'main-cluster'
         AWS_ECS_TASK_DEFINITION_PATH = './ecs/container-definition-update-image.json'
+        AWS_ECR_URL = credentials('AWS_REPOSITORY_URL_SECRET')
     }
 
     stages {
@@ -41,6 +42,42 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
                     script {
+                        try {
+                            println "1building docker image $AWS_ECR_URL"
+                        } catch (e) {
+                            echo '1'
+                            print e
+                        }
+                        try {
+                            println '2building docker image $AWS_ECR_URL'
+                        } catch (e) {
+                            echo '2'
+                            print e
+                        }
+                        try {
+                            println '''3building docker image $AWS_ECR_URL'''
+                        } catch (e) {
+                            echo '3'
+                            print e
+                        }
+                        try {
+                            println '''4building docker image ${AWS_ECR_URL}'''
+                        } catch (e) {
+                            echo '4'
+                            print e
+                        }
+                        try {
+                            println '5building docker image ${AWS_ECR_URL}'
+                        } catch (e) {
+                            echo '5'
+                            print e
+                        }
+                        try {
+                            println "6building docker image ${AWS_ECR_URL}"
+                        } catch (e) {
+                            echo '6'
+                            print e
+                        }
                         try {
                             println 'building docker image $AWS_ECR_URL'
                             sh('docker build -t ${AWS_ECR_URL}:${POM_VERSION} .')
