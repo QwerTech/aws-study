@@ -11,14 +11,6 @@
           "protocol": "tcp",
           "containerPort": 8080
         }
-      ],
-      "compatibilities": [
-        "EXTERNAL",
-        "EC2"
-      ],
-      "family": "aws-study-taskdefinition",
-      "requiresCompatibilities": [
-        "EC2"
       ]
     }
 ]
