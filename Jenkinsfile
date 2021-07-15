@@ -40,7 +40,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'AWS_REPOSITORY_URL_SECRET', variable: 'AWS_ECR_URL')]) {
-                    println("building docker image")
+                    println("building docker image ${AWS_ECR_URL}")
+                    println 'building docker image ${AWS_ECR_URL}'
                     script {
                         try {
                             sh('docker build -t ${AWS_ECR_URL}:${POM_VERSION} .')
