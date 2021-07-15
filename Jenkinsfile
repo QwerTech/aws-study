@@ -52,7 +52,7 @@ pipeline {
                     script {
                         def login = ecrLogin()
 //                        sh('#!/bin/sh -e\n' + "${login}") // hide logging
-                        sh("${login}")
+                        sh("${login} ${AWS_ECR_URL}")
                         docker.image("${AWS_ECR_URL}:${POM_VERSION}").push()
                     }
                 }
