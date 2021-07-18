@@ -30,13 +30,13 @@ pipeline {
     }
 
     stages {
-//        stage('Build & Test') {
-//            steps {
-//                withMaven(options: [artifactsPublisher(), mavenLinkerPublisher(), dependenciesFingerprintPublisher(disabled: true), jacocoPublisher(disabled: true), junitPublisher(disabled: true)]) {
-//                    sh "mvn -B -U clean package"
-//                }
-//            }
-//        }
+        stage('Build & Test') {
+            steps {
+                withMaven(options: [artifactsPublisher(), mavenLinkerPublisher(), dependenciesFingerprintPublisher(disabled: true), jacocoPublisher(disabled: true), junitPublisher(disabled: true)]) {
+                    sh "mvn -B -U clean package"
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -54,9 +54,8 @@ pipeline {
                             def login = ecrLogin()
                             sh('#!/bin/sh -e\n' + "${login}") // hide logging
 //                            sh("${login}")
-                            def appImage = docker.image("${APP_NAME}:${env.BUILD_ID}")
-                            appImage.push("${AWS_ECR_REPO}:${env.BUILD_ID}")
-                            appImage.push("latest")
+                            sh("docker tag ${APP_NAME}:${env.BUILD_ID} ${AWS_ECR_URL}/${AWS_ECR_REPO}:${env.BUILD_ID}")
+                            sh("docker push ${AWS_ECR_URL}/${AWS_ECR_REPO}:${env.BUILD_ID}")
                         }
                     }
                 }
