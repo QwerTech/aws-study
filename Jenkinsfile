@@ -26,6 +26,7 @@ pipeline {
         AWS_ECS_CLUSTER = 'main-cluster'
         AWS_ECS_TASK_DEFINITION_PATH = './ecs/container-definition-update-image.json'
         AWS_ECR_URL = "673796292432.dkr.ecr.eu-central-1.amazonaws.com"
+        AWS_ECR_REPO = "aws-study-repository"
     }
 
     stages {
@@ -53,7 +54,9 @@ pipeline {
                             def login = ecrLogin()
                             sh('#!/bin/sh -e\n' + "${login}") // hide logging
 //                            sh("${login}")
-                            docker.image("${APP_NAME}:${env.BUILD_ID}").push()
+                            def appImage = docker.image("${APP_NAME}:${env.BUILD_ID}")
+                            appImage.push("${AWS_ECR_REPO}:${env.BUILD_ID}")
+                            appImage.push("latest")
                         }
                     }
                 }
@@ -97,7 +100,7 @@ def getVersion() {
 
 def updateContainerDefinitionJsonWithImageVersion() {
     def containerDefinitionJson = readJSON file: AWS_ECS_TASK_DEFINITION_PATH, returnPojo: true
-    containerDefinitionJson.first()['image'] = "${AWS_ECR_URL}:${env.BUILD_ID}".inspect()
+    containerDefinitionJson.first()['image'] = "${AWS_ECR_URL}/${AWS_ECR_REPO}:${env.BUILD_ID}".inspect()
     echo "task definiton json: ${containerDefinitionJson}"
     writeJSON file: AWS_ECS_TASK_DEFINITION_PATH, json: containerDefinitionJson
 }
