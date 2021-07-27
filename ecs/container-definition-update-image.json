@@ -5,6 +5,14 @@
       "image": "",
       "essential": true,
       "name": "aws-study-container",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/aws-study-taskdefinition",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
       "portMappings": [
         {
           "hostPort": 80,
