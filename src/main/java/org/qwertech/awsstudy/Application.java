@@ -1,13 +1,19 @@
 package org.qwertech.awsstudy;
 
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.AWSXRayRecorderBuilder;
+import com.amazonaws.xray.plugins.EC2Plugin;
+import com.amazonaws.xray.plugins.ElasticBeanstalkPlugin;
+import com.amazonaws.xray.strategy.sampling.LocalizedSamplingStrategy;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.Filter;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,8 +32,26 @@ public class Application {
 
   private static final Map<Integer, Product> products = new ConcurrentHashMap<>();
 
+  static {
+    AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder.standard().withPlugin(new EC2Plugin()).withPlugin(new ElasticBeanstalkPlugin());
+
+    URL ruleFile = Application.class.getResource("/sampling-rules.json");
+    builder.withSamplingStrategy(new LocalizedSamplingStrategy(ruleFile));
+
+    AWSXRay.setGlobalRecorder(builder.build());
+
+    AWSXRay.beginSegment("product-init");
+
+    AWSXRay.endSegment();
+  }
+
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
+  }
+
+  @Bean
+  public Filter tracingFilter() {
+    return new com.amazonaws.xray.javax.servlet.AWSXRayServletFilter("productmanager");
   }
 
   @Bean
