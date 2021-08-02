@@ -1,0 +1,17 @@
+{
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/home/ec2-user/aws-study-logging/logs/aws-study-logging.log",
+            "log_group_name": "aws-study-logging",
+            "log_stream_name": "aws-study-logging-{instance_id}.log",
+            "timestamp_format": "%Y-%m-%d %H:%M:%S.%f",
+            "multi_line_start_pattern": "{timestamp_format}"
+          }
+        ]
+      }
+    }
+  }
+}
